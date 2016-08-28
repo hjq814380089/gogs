@@ -1,25 +1,26 @@
-# Docker for Gogs
+# Docker for Gogs(中文翻译)
 
-Visit [Docker Hub](https://hub.docker.com/r/gogs/) see all available images and tags.
+可以到 [Docker Hub](https://hub.docker.com/r/gogs/) 下查看所有可用镜像和标签。
+## 用法
 
-## Usage
-
-To keep your data out of Docker container, we do a volume (`/var/gogs` -> `/data`) here, and you can change it based on your situation.
+为了实现数据持久化，可以先新建一个数据卷容器(`/var/gogs` -> `/data`)，当然你也可以根据实际情况修改数据卷路径。
+>译者注：
 
 ```
-# Pull image from Docker Hub.
+# 从Docker Hub拉取gogs镜像。
 $ docker pull gogs/gogs
 
-# Create local directory for volume.
+# 为数据卷容器创建本地目录(宿主机目录)。
 $ mkdir -p /var/gogs
 
-# Use `docker run` for the first time.
+# 首次可以使用 `docker run` 命令创建gogs容器。
 $ docker run --name=gogs -p 10022:22 -p 10080:3000 -v /var/gogs:/data gogs/gogs
 
-# Use `docker start` if you have stopped it.
+# 以后当容器停止时可以通过 `docker start` 命令启动。
 $ docker start gogs
 ```
 
+注意：
 Note: It is important to map the Gogs ssh service from the container to the host and set the appropriate SSH Port and URI settings when setting up Gogs for the first time. To access and clone Gogs Git repositories with the above configuration you would use: `git clone ssh://git@hostname:10022/username/myrepo.git` for example.
 
 Files will be store in local path `/var/gogs` in my case.
