@@ -45,17 +45,17 @@ If you're more comfortable with mounting data to a data container, the commands 
 # 创建数据容器
 docker run --name=gogs-data --entrypoint /bin/true gogs/gogs
 
-# Use `docker run` for the first time.
+# 第一次需要使用 `docker run`运行容器。
 docker run --name=gogs --volumes-from gogs-data -p 10022:22 -p 10080:3000 gogs/gogs
 ```
 
 #### 使用Docker 1.9版本中新增的Volume命令
 
 ```
-# 创建docker volume
+# 创建docker volume。
 $ docker volume create --name gogs-data
 
-# Use `docker run` for the first time.
+# 第一次需要使用 `docker run`运行容器。
 $ docker run --name=gogs -p 10022:22 -p 10080:3000 -v gogs-data:/data gogs/gogs
 ```
 
@@ -65,16 +65,16 @@ $ docker run --name=gogs -p 10022:22 -p 10080:3000 -v gogs-data:/data gogs/gogs
 
 大多数的配置是非常明了、易于理解的，但是在Docker下运行Gogs仍有一些令人困惑的配置：
 
-- **仓库根目录**: keep it as default value `/home/git/gogs-repositories` because `start.sh` already made a symbolic link for you.
-- **Run User**: keep it as default value `git` because `start.sh` already setup a user with name `git`.
-- **Domain**: fill in with Docker container IP (e.g. `192.168.99.100`). But if you want to access your Gogs instance from a different physical machine, please fill in with the hostname or IP address of the Docker host machine.
+- **Repository Root Path**: 使用他的默认值`/home/git/gogs-repositories`就行因为在`start.sh`脚本中已经为你创建了一个软链接。
+- **Run User**: 最好使用`git`因为在`start.sh`脚本中已经新建了一个名为`git`的用户。
+- **Domain**: 一般情况填写Dokcer容器的ip地址(例如： `192.168.99.100`)。但是如果当你需要在其他的物理机访问你的Gogs服务，这里应该填写Docker宿主机的主机名或ip地址。
 - **SSH Port**: Use the exposed port from Docker container. For example, your SSH server listens on `22` inside Docker, but you expose it by `10022:22`, then use `10022` for this value. **Builtin SSH server is not recommended inside Docker Container**
 - **HTTP Port**: Use port you want Gogs to listen on inside Docker container. For example, your Gogs listens on `3000` inside Docker, and you expose it by `10080:3000`, but you still use `3000` for this value.
-- **Application URL**: Use combination of **Domain** and **exposed HTTP Port** values (e.g. `http://192.168.99.100:10080/`).
+- **Application URL**: 通过**Domain** 和 **exposed HTTP Port** 的值组合起来 (例如：`http://192.168.99.100:10080/`).
 
-Full documentation of application settings can be found [here](http://gogs.io/docs/advanced/configuration_cheat_sheet.html).
+需要查看完整的应用文档配置手册可以点击 [here](http://gogs.io/docs/advanced/configuration_cheat_sheet.html).
 
-### Container options
+### 容器参数
 
 This container have some options available via environment variables, these options are opt-in features that can help the administration of this container:
 
@@ -105,8 +105,8 @@ This container have some options available via environment variables, these opti
 - `docker pull gogs/gogs`
 - `docker stop gogs`
 - `docker rm gogs`
-- Finally, create container as the first time and don't forget to do same volume and port mapping.
+- 最后, 像第一次一样创建容器，并且不要忘了使用以前的数据卷以及做端口映射。
 
-## 已知存在的问题
+## 已知的问题
 
 - The docker container can not currently be build on Raspberry 1 (armv6l) as our base image `alpine` does not have a `go` package available for this platform.
