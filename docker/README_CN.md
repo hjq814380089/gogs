@@ -1,10 +1,9 @@
 # Docker for Gogs(中文翻译)
 
-可以到 [Docker Hub](https://hub.docker.com/r/gogs/) 下查看所有可用镜像和标签。
+可以在 [Docker Hub](https://hub.docker.com/r/gogs/) 下查看所有可用镜像和标签。
 ## 用法
 
 为了实现数据持久化，可以先新建一个数据卷容器(`/var/gogs` -> `/data`)，当然你也可以根据实际情况修改数据卷路径。
->译者注：
 
 ```
 # 从Docker Hub拉取gogs镜像。
@@ -22,10 +21,11 @@ $ docker start gogs
 
 注意：
 Note: It is important to map the Gogs ssh service from the container to the host and set the appropriate SSH Port and URI settings when setting up Gogs for the first time. To access and clone Gogs Git repositories with the above configuration you would use: `git clone ssh://git@hostname:10022/username/myrepo.git` for example.
+>译者注：
 
-Files will be store in local path `/var/gogs` in my case.
+如上配置，文件会被保存到（宿主机）本地路径 `/var/gogs`下。 
 
-Directory `/var/gogs` keeps Git repositories and Gogs data:
+`/var/gogs` 路径下存放Git版本库以及Gogs数据：
 
     /var/gogs
     |-- git
@@ -42,30 +42,30 @@ Directory `/var/gogs` keeps Git repositories and Gogs data:
 If you're more comfortable with mounting data to a data container, the commands you execute at the first time will look like as follows:
 
 ```
-# Create data container
+# 创建数据容器
 docker run --name=gogs-data --entrypoint /bin/true gogs/gogs
 
 # Use `docker run` for the first time.
 docker run --name=gogs --volumes-from gogs-data -p 10022:22 -p 10080:3000 gogs/gogs
 ```
 
-#### Using Docker 1.9 Volume command
+#### 使用Docker 1.9版本中新增的Volume命令
 
 ```
-# Create docker volume.
+# 创建docker volume
 $ docker volume create --name gogs-data
 
 # Use `docker run` for the first time.
 $ docker run --name=gogs -p 10022:22 -p 10080:3000 -v gogs-data:/data gogs/gogs
 ```
 
-## Settings
+## 设置
 
-### Application
+### 应用
 
-Most of settings are obvious and easy to understand, but there are some settings can be confusing by running Gogs inside Docker:
+大多数的配置是非常明了、易于理解的，但是在Docker下运行Gogs仍有一些令人困惑的配置：
 
-- **Repository Root Path**: keep it as default value `/home/git/gogs-repositories` because `start.sh` already made a symbolic link for you.
+- **仓库根目录**: keep it as default value `/home/git/gogs-repositories` because `start.sh` already made a symbolic link for you.
 - **Run User**: keep it as default value `git` because `start.sh` already setup a user with name `git`.
 - **Domain**: fill in with Docker container IP (e.g. `192.168.99.100`). But if you want to access your Gogs instance from a different physical machine, please fill in with the hostname or IP address of the Docker host machine.
 - **SSH Port**: Use the exposed port from Docker container. For example, your SSH server listens on `22` inside Docker, but you expose it by `10022:22`, then use `10022` for this value. **Builtin SSH server is not recommended inside Docker Container**
@@ -96,17 +96,17 @@ This container have some options available via environment variables, these opti
   - <u>Action:</u>
       Request crond to be run inside the container. Its default configuration will periodically run all scripts from `/etc/periodic/${period}` but custom crontabs can be added to `/var/spool/cron/crontabs/`.
 
-## Upgrade
+## 升级
 
-:exclamation::exclamation::exclamation:<span style="color: red">**Make sure you have volumed data to somewhere outside Docker container**</span>:exclamation::exclamation::exclamation:
+:exclamation::exclamation::exclamation:<span style="color: red">**确保你已经将数据打卷备份到Docker容器以外的地方**</span>:exclamation::exclamation::exclamation:
 
-Steps to upgrade Gogs with Docker:
+在Docker下升级Gogs的步骤：
 
 - `docker pull gogs/gogs`
 - `docker stop gogs`
 - `docker rm gogs`
 - Finally, create container as the first time and don't forget to do same volume and port mapping.
 
-## Known Issues
+## 已知存在的问题
 
 - The docker container can not currently be build on Raspberry 1 (armv6l) as our base image `alpine` does not have a `go` package available for this platform.
